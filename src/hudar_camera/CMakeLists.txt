@@ -38,12 +38,15 @@ link_directories(
 add_executable(radar_camera src/main.cpp src/Camera.cpp)
 ament_target_dependencies(radar_camera rclcpp OpenCV std_msgs sensor_msgs cv_bridge)
 
+add_executable(publish_video src/publish_video.cpp)
+ament_target_dependencies(publish_video rclcpp OpenCV std_msgs sensor_msgs cv_bridge)
 target_link_libraries(radar_camera
   -lMvCameraControl
 )
 
 install(TARGETS
   radar_camera
+  publish_video
   DESTINATION lib/${PROJECT_NAME}
 )
 ament_package()
