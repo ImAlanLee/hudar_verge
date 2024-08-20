@@ -2,7 +2,7 @@
  * @Author: AlanLee
  * @Date: 2024-08-20 16:14:24
  * @LastEditors: xuxin lisian_magic@163.com
- * @LastEditTime: 2024-08-20 21:50:32
+ * @LastEditTime: 2024-08-21 00:30:56
  * @FilePath: /hudar_verge/src/hudar_core/src/radar_front.cpp
  * @Description:
  */
@@ -27,22 +27,10 @@ public:
         std::bind(&RadarFront::image_callback, this, std::placeholders::_1));
   }
   void spin() {
-    RCLCPP_INFO(this->get_logger(), "Spin Start");
-    std::lock_guard<std::mutex> lock(mutex_);
-    cv::Mat frame_copy;
-    {
-      // 锁定互斥锁以确保线程安全
-
-      frame_copy = frame.clone(); // 深拷贝以避免锁长时间持有
-      // if (!frame.empty()) {
-      //   cv::imshow("radar_front", frame);
-      // }
+    if (!frame.empty()) {
+      cv::imshow("radar_front", frame);
+      cv::waitKey(1); // 允许OpenCV处理GUI事件
     }
-    // 在锁外部显示图像以减少锁定时间
-    // if (!frame_copy.empty()) {
-    // cv::imshow("radar_front", frame_copy);
-    //   cv::waitKey(1); // 允许OpenCV处理GUI事件
-    // }
   }
 
 private:
@@ -50,7 +38,6 @@ private:
   static void onMouse(int event, int x, int y, int flags, void *userdata) {
 
     RadarFront *self = static_cast<RadarFront *>(userdata);
-    std::lock_guard<std::mutex> lock(self->mutex_);
     if (event == cv::EVENT_LBUTTONDOWN) {
       RCLCPP_INFO(self->get_logger(), "Left button clicked at (%d, %d)", x, y);
       self->pts.push_back(cv::Point(x, y));
@@ -60,9 +47,9 @@ private:
   void image_callback(const sensor_msgs::msg::Image::SharedPtr msg) {
     std::lock_guard<std::mutex> lock(mutex_);
     try {
-
       // 使用cv_bridge将ROS图像消息转换为OpenCV格式
-      frame = cv_bridge::toCvShare(msg, "bgr8")->image;
+      cv::Mat tmp = cv_bridge::toCvShare(msg, "bgr8")->image;
+      frame = tmp.clone();
     } catch (cv_bridge::Exception &e) {
       RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", e.what());
       return;
