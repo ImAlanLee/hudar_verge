@@ -1,3 +1,11 @@
+<!--
+ * @Author: AlanLee
+ * @Date: 2024-08-20 13:30:31
+ * @LastEditors: xuxin lisian_magic@163.com
+ * @LastEditTime: 2024-08-20 18:36:24
+ * @FilePath: /hudar_verge/README.md
+ * @Description: 
+-->
 # hudar_verge
 radar station
 
@@ -20,3 +28,11 @@ radar station
 7. 实现便于修改参数代码架构。
 
 **未来展望：**利用Mid-70实现点云聚类直接定位。
+
+
+# Usage
+
+以指定视频文件启动
+```shell
+ros2 run hudar_camera publish_video --ros-args -p /radar/video_path:="'/home/lisian/RM_workspace/CvTest/t1.mp4'"
+```

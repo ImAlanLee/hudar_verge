@@ -2,7 +2,7 @@
  * @Author: AlanLee
  * @Date: 2024-08-20 18:20:24
  * @LastEditors: xuxin lisian_magic@163.com
- * @LastEditTime: 2024-08-20 18:29:56
+ * @LastEditTime: 2024-08-20 19:02:58
  * @FilePath: /hudar_verge/src/hudar_camera/src/publish_video.cpp
  * @Description:
  */
@@ -52,6 +52,9 @@ private:
       // 发布图像消息
       publisher_->publish(*img_msg);
       //   RCLCPP_INFO(this->get_logger(), "Publishing image");
+    } else {
+      RCLCPP_INFO(this->get_logger(), "Video reached the end! Exiting!");
+      exit(0);
     }
   }
 
